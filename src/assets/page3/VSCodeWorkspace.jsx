@@ -1,5 +1,108 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import './VSCodeWorkspace.css';
+import ProjectDemoModal from './ProjectDemoModal.jsx';
+
+const ProjectPreviewCard = ({ activeFile, projects }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef(null);
+
+  const handleNavigate = () => {
+    const slug = activeFile.data.title.toLowerCase().replace(/\s+/g, '-');
+    window.__CURRENT_PROJECTS = projects;
+    window.history.pushState(null, '', `/${slug}`);
+    window.dispatchEvent(new Event('popstate'));
+  };
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isHovered) {
+        videoRef.current.play().catch(() => {});
+      } else {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+    }
+  }, [isHovered]);
+
+  return (
+    <div className="project-card-custom">
+      <div
+        className="project-card-custom__img-wrap"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={handleNavigate}
+        title="Click to open project showcase page"
+        style={{ cursor: 'pointer' }}
+      >
+        <img
+          src={activeFile.data.image}
+          alt={activeFile.data.title}
+          className={`project-card-custom__img ${isHovered && activeFile.data.shortVideo ? 'hidden' : ''}`}
+        />
+        {activeFile.data.shortVideo && (
+          <video
+            ref={videoRef}
+            src={activeFile.data.shortVideo}
+            className={`project-card-custom__video ${isHovered ? 'visible' : ''}`}
+            loop
+            muted
+            playsInline
+          />
+        )}
+        <div className="project-card-custom__overlay" />
+        <div className={`project-card-custom__play-badge ${isHovered ? 'hovered' : ''}`}>
+          {isHovered ? '▶ Playing Video • Click to Open Page' : '🎬 Hover to Play Video • Click for Page'}
+        </div>
+      </div>
+      <div className="project-card-custom__body">
+        <div className="project-card-custom__tags">
+          {activeFile.data.tags.map(tag => (
+            <span key={tag} className={`project-tag-custom tag-${activeFile.data.tagColor}`}>{tag}</span>
+          ))}
+        </div>
+        <h3 className="project-card-custom__title" onClick={handleNavigate} style={{ cursor: 'pointer' }}>
+          {activeFile.data.title}
+        </h3>
+        <p className="project-card-custom__desc">{activeFile.data.description}</p>
+        <div className="project-card-custom__links">
+          <button className="btn-demo btn-demo-modal" onClick={handleNavigate}>
+            🚀 View Showcase Page
+          </button>
+          {activeFile.data.website && (
+            <a href={activeFile.data.website} target="_blank" rel="noopener noreferrer" className="btn-demo btn-website">
+              🌐 Website ↗
+            </a>
+          )}
+          <a href={activeFile.data.github || 'https://github.com/prakashkr2894'} target="_blank" rel="noopener noreferrer" className="btn-code">
+            💻 GitHub →
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ArrowChevronIcon = ({ isOpen }) => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{
+      color: '#858585',
+      transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+      transition: 'transform 0.15s ease',
+      flexShrink: 0,
+      marginRight: '2px',
+    }}
+  >
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
 
 const FolderIcon = ({ isOpen }) => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#E0A96D' }}>
@@ -61,7 +164,7 @@ const CloseIcon = () => (
 const GIT_COMMITS = [
   {
     hash: 'a4f2c9b',
-    message: 'feat(ai): ZentriXAI voice-to-action agent — AssemblyAI + LLM + CRUD ops',
+    message: 'feat(ai): Zentrixa-AI voice-to-action agent — AssemblyAI + LLM + CRUD ops',
     date: 'Jun 2025',
     branch: 'feature/zentrixai',
     tags: ['AI', 'Voice Agent', 'LLM'],
@@ -69,8 +172,8 @@ const GIT_COMMITS = [
     added: 47,
     removed: 3,
     detail: {
-      title: 'ZentriXAI — Voice-to-Action Agent',
-      description: 'Developed ZentriXAI, an embedded voice-to-action AI agent inside TickZen. Transcribes speech via AssemblyAI, routes intent through an LLM (OpenRouter API), and executes real CRUD operations on Kanban tasks with no manual clicks.',
+      title: 'Zentrixa-AI — Voice-to-Action Agent',
+      description: 'Developed Zentrixa-AI, an embedded voice-to-action AI agent inside TickZen. Transcribes speech via AssemblyAI, routes intent through an LLM (OpenRouter API), and executes real CRUD operations on Kanban tasks with no manual clicks.',
       tech: ['AssemblyAI', 'OpenRouter API', 'FastAPI', 'LangChain', 'React', 'MongoDB'],
       role: 'AI Engineer / Full-Stack Developer',
       impact: 'Achieved ~80% first-pass voice recognition accuracy in production with 25+ active users',
@@ -167,7 +270,7 @@ const EXPERIENCES = [
   {
     role: 'Software Developer Intern',
     company: 'Agrasar Soft Consultancy Services',
-    period: 'Nov 2024 – May 2025',
+    period: 'Nov 2024 – Jun 2025 (6+2 Months)',
     type: 'Internship',
     icon: '🏢',
     bullets: [
@@ -224,8 +327,8 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
       folder: null,
       icon: <FileMdIcon />,
       searchTags: ['readme', 'prakash', 'intro', 'workspace'],
-      code: `# Prakash Kumar — SE · DevOps · AI Engineer · Product Manager\n\nWelcome! You're currently viewing the **${activeRole?.toUpperCase() || 'SWE'} perspective**.\n\n## 📁 Directory Structure\n- 📁 **projects/** : Full-stack apps, AI SaaS, and DevOps-automated systems.\n- 📁 **certificates/** : Cloud, AI, DevOps & Product certifications.\n- 📁 **techstack/** : Core technical competencies.\n\n## 🔍 How to navigate\n- Click any **file** in the sidebar to open it\n- Use **Search** (🔍) to find by technology or project name\n- Check **Source Control** (branch icon) to see experience timeline\n\n## 🏆 Achievements\n- 4 production SaaS platforms shipped live\n- 25+ active users on TickZen with ~80% voice recognition accuracy\n- Zero-downtime Kubernetes deployments with Istio service mesh\n- Top 10 (Top 4%) in AICTE Bootcamp among 250+ startups\n\n*Built with React + Vite — Open Source @ GitHub/PROTOX11*`,
-      meta: { title: 'Prakash Kumar — Portfolio', subtitle: 'SE · DevOps · AI · PM' }
+      code: `# Prakash Kumar — SE · DevOps · AI Engineer\n\nWelcome! You're viewing the **${activeRole?.toUpperCase() || 'SWE'} perspective**.\n\n## 📁 Directory Structure\n- 📁 **projects/** : Full-stack apps, AI SaaS & DevOps systems.\n- 📁 **certificates/** : Cloud, AI, DevOps certifications.\n\n## 🔍 How to Navigate\n- Click any **file** in the sidebar to open it\n- Use **Search** (🔍) to find by tech or project name\n- Check **Source Control** to see experience timeline\n\n## 🏆 Achievements\n- 4 production SaaS platforms shipped live\n- 25+ active users on TickZen (~80% voice accuracy)\n- Zero-downtime Kubernetes deployments with Istio\n- Top 10 (Top 4%) in AICTE Bootcamp among 250+ startups\n\n*Built with React + Vite — Open Source @ GitHub/prakashkr2894*`,
+      meta: { title: 'Prakash Kumar — Portfolio', subtitle: 'SE · DevOps · AI' }
     },
     ...projects.map((p) => ({
       id: `project-${p.title.toLowerCase().replace(/\s+/g, '-')}`,
@@ -240,13 +343,13 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
         tags: p.tags,
         description: p.description,
         deployment: p.liveDemo,
-        repository: p.github || 'https://github.com/PROTOX11/' + p.title.toLowerCase().replace(/\s+/g, '-'),
+        repository: p.github || 'https://github.com/prakashkr2894/' + p.title.toLowerCase().replace(/\s+/g, '-'),
       }, null, 2),
       data: p,
     })),
     ...certificates.map((c, idx) => ({
       id: `cert-${idx}`,
-      name: `${c.issuer.replace(/[^a-zA-Z]/g, '')}_${c.tag}.cert`,
+      name: `${c.title.replace(/[^a-zA-Z0-9]/g, '')}.cert`,
       type: 'cert',
       folder: 'certificates',
       icon: <FileCertIcon />,
@@ -254,33 +357,18 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
       code: `Certificate: "${c.title}"\nIssuer: ${c.issuer}\nDate: ${c.date}\nField: ${c.tag}\nVerificationLink: "${c.link}"`,
       data: c,
     })),
-    {
-      id: 'techstack',
-      name: 'skills.json',
-      type: 'json',
-      folder: 'techstack',
-      icon: <FileJsonIcon />,
-      searchTags: ['skills', 'tech', 'stack', 'tools', ...techStack.map(t => t.name.toLowerCase())],
-      code: JSON.stringify({
-        languages: ['Java', 'JavaScript', 'TypeScript', 'Python', 'Bash'],
-        devOpsAndCloud: ['Docker', 'Kubernetes', 'Helm', 'Terraform', 'GitHub Actions', 'AWS', 'Nginx', 'PM2'],
-        aiAndML: ['LangChain', 'OpenAI API', 'AssemblyAI', 'Ollama', 'Prompt Engineering', 'RAG', 'FastAPI'],
-        frontendAndBackend: ['React', 'Next.js', 'Node.js', 'Express', 'Spring Boot', 'MongoDB', 'MySQL'],
-        productAndTools: ['Figma', 'Jira', 'Notion', 'Postman', 'Razorpay', 'Brevo SMTP'],
-      }, null, 2),
-      data: techStack,
-    },
-  ], [projects, certificates, techStack, activeRole]);
+  ], [projects, certificates, activeRole]);
 
   const [files] = useState(initialFiles);
   const [openTabs, setOpenTabs] = useState(['readme']);
   const [activeFileId, setActiveFileId] = useState('readme');
-  const [expandedFolders, setExpandedFolders] = useState({ projects: true, certificates: false, techstack: false });
+  const [expandedFolders, setExpandedFolders] = useState({ projects: true, certificates: false });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeActivity, setActiveActivity] = useState('explorer');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCommit, setSelectedCommit] = useState(null);
   const [gitView, setGitView] = useState('commits');
+  const [demoModalProject, setDemoModalProject] = useState(null);
 
   const openFile = (fileId) => {
     if (!openTabs.includes(fileId)) setOpenTabs([...openTabs, fileId]);
@@ -294,6 +382,19 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
   };
   const toggleFolder = (name) => setExpandedFolders(prev => ({ ...prev, [name]: !prev[name] }));
   const activeFile = files.find(f => f.id === activeFileId) || files[0];
+
+  useEffect(() => {
+    window.__EXPAND_VSCODE_FOLDER = (folderName) => {
+      setExpandedFolders(prev => ({ ...prev, [folderName]: true }));
+      setIsSidebarOpen(true);
+      setActiveActivity('explorer');
+    };
+    window.__OPEN_VSCODE_GIT_EXPERIENCE = () => {
+      setIsSidebarOpen(true);
+      setActiveActivity('git');
+      setGitView('commits');
+    };
+  }, []);
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -319,7 +420,7 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
   };
 
   return (
-    <div className="vscode-workspace">
+    <div className="vscode-workspace" id="vscode-ide-workspace">
       {/* Activity Bar */}
       <div className="vscode-activity-bar">
         <div className="activity-top">
@@ -363,9 +464,10 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
                 <div className={`tree-item file-item ${activeFileId === 'readme' ? 'active' : ''}`} onClick={() => openFile('readme')}>
                   <FileMdIcon /><span className="file-name">README.md</span>
                 </div>
-                {['projects', 'certificates', 'techstack'].map(folder => (
+                {['projects', 'certificates'].map(folder => (
                   <div className="folder-container" key={folder}>
                     <div className="tree-item folder-item" onClick={() => toggleFolder(folder)}>
+                      <ArrowChevronIcon isOpen={expandedFolders[folder]} />
                       <FolderIcon isOpen={expandedFolders[folder]} />
                       <span className="folder-name">{folder}</span>
                     </div>
@@ -374,6 +476,8 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
                         {files.filter(f => f.folder === folder).map(file => (
                           <div
                             key={file.id}
+                            data-folder={folder}
+                            data-file-id={file.id}
                             className={`tree-item file-item ${activeFileId === file.id ? 'active' : ''}`}
                             onClick={() => openFile(file.id)}
                           >
@@ -608,11 +712,13 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
             <div className="code-editor-pane">
               <div className="pane-header">Source Code ({activeFile.name})</div>
               <div className="code-lines-wrapper">
-                <div className="line-numbers">
-                  {activeFile.code.split('\n').map((_, i) => (
-                    <div key={i} className="line-num">{i + 1}</div>
-                  ))}
-                </div>
+                {activeFile?.code && activeFile.code.trim().length > 0 && (
+                  <div className="line-numbers">
+                    {activeFile.code.split('\n').map((_, i) => (
+                      <div key={i} className="line-num">{i + 1}</div>
+                    ))}
+                  </div>
+                )}
                 <pre className="code-content"><code>{activeFile.code}</code></pre>
               </div>
             </div>
@@ -635,19 +741,8 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
                     <div className="readme-card">
                       <h3>📁 Directory Structure</h3>
                       <ul>
-                        {activeRole === 'pm' ? (
-                          <>
-                            <li><strong>projects/</strong>: Products I founded & shipped — SaaS, D2C & tools.</li>
-                            <li><strong>certificates/</strong>: Innovation bootcamp, IBM & product credentials.</li>
-                            <li><strong>techstack/</strong>: Product & technical skills I bring to the table.</li>
-                          </>
-                        ) : (
-                          <>
-                            <li><strong>projects/</strong>: Full-stack apps, AI SaaS & DevOps-automated systems.</li>
-                            <li><strong>certificates/</strong>: Cloud, AI, DevOps & engineering certifications.</li>
-                            <li><strong>techstack/</strong>: Core technical competencies across the full stack.</li>
-                          </>
-                        )}
+                        <li><strong>projects/</strong>: Full-stack apps, AI SaaS & DevOps-automated systems.</li>
+                        <li><strong>certificates/</strong>: Cloud, AI, DevOps & engineering certifications.</li>
                       </ul>
                     </div>
                   </div>
@@ -655,25 +750,7 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
 
                 {activeFile.folder === 'projects' && (
                   <div className="preview-project">
-                    <div className="project-card-custom">
-                      <div className="project-card-custom__img-wrap">
-                        <img src={activeFile.data.image} alt={activeFile.data.title} className="project-card-custom__img" />
-                        <div className="project-card-custom__overlay" />
-                      </div>
-                      <div className="project-card-custom__body">
-                        <div className="project-card-custom__tags">
-                          {activeFile.data.tags.map(tag => (
-                            <span key={tag} className={`project-tag-custom tag-${activeFile.data.tagColor}`}>{tag}</span>
-                          ))}
-                        </div>
-                        <h3 className="project-card-custom__title">{activeFile.data.title}</h3>
-                        <p className="project-card-custom__desc">{activeFile.data.description}</p>
-                        <div className="project-card-custom__links">
-                          <a href={activeFile.data.liveDemo} target="_blank" rel="noopener noreferrer" className="btn-demo">Live Demo ↗</a>
-                          <a href={activeFile.data.github || 'https://github.com/PROTOX11?tab=repositories'} target="_blank" rel="noopener noreferrer" className="btn-code">GitHub →</a>
-                        </div>
-                      </div>
-                    </div>
+                    <ProjectPreviewCard activeFile={activeFile} projects={projects} />
                   </div>
                 )}
 
@@ -695,21 +772,6 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
                     </a>
                   </div>
                 )}
-
-                {activeFile.id === 'techstack' && (
-                  <div className="preview-skills">
-                    <h3>Technologies & Tooling Mastered</h3>
-                    <div className="skills-grid-custom">
-                      {activeFile.data.map(tech => (
-                        <div key={tech.name} className="skill-item-custom">
-                          <img src={tech.icon} alt={tech.name} className="skill-icon" />
-                          <span className="skill-name">{tech.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
               </div>
             </div>
           </div>
@@ -731,8 +793,10 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
             <span className="status-item git-branch">
               <ActivityIconGit />&nbsp;<span>main*</span>
             </span>
-            <span className="status-item sync-status">⟳</span>
-            <span className="status-item error-status">🅇 0 ⚠ 0</span>
+            <span className="status-item sync-status">↻</span>
+            <span className="status-item error-status">
+              <span style={{ fontSize: '10px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '13px', height: '13px', border: '1px solid #fff', borderRadius: '2px', lineHeight: 1, fontWeight: 'bold' }}>✕</span> 0 &nbsp;⚠ 0
+            </span>
           </div>
           <div className="status-right">
             <span className="status-item">Ln 1, Col 1</span>
@@ -745,51 +809,13 @@ function VSCodeWorkspace({ projects, techStack, certificates, activeRole }) {
         </div>
       </div>
 
-      {/* ── Profile Photo Panel ─── right side of IDE */}
-      <div className="ide-profile-panel">
-        <div className="ide-profile-photo-wrap">
-          <img
-            src="/resumes/prakash_photo.png"
-            alt="Prakash Kumar"
-            className="ide-profile-photo"
-          />
-          <div className="ide-profile-ring" />
-        </div>
-        <p className="ide-profile-name">Prakash Kumar</p>
-        <span className={`ide-profile-badge ${activeRole === 'pm' ? 'ide-profile-badge--gold' : ''}`}>
-          {activeRole === 'pm' ? '📊 Product Manager' : '💻 Software Engineer'}
-        </span>
-        <div className="ide-profile-divider" />
-        <div className="ide-profile-stats">
-          <div className="ide-profile-stat">
-            <span className="ide-profile-stat__num">4</span>
-            <span className="ide-profile-stat__label">SaaS Shipped</span>
-          </div>
-          <div className="ide-profile-stat">
-            <span className="ide-profile-stat__num">25+</span>
-            <span className="ide-profile-stat__label">Active Users</span>
-          </div>
-          <div className="ide-profile-stat">
-            <span className="ide-profile-stat__num">Top 10</span>
-            <span className="ide-profile-stat__label">AICTE Startup</span>
-          </div>
-        </div>
-        <div className="ide-profile-divider" />
-        <div className="ide-profile-links">
-          <a href="https://github.com/PROTOX11" target="_blank" rel="noopener noreferrer" className="ide-profile-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-            GitHub
-          </a>
-          <a href="https://www.linkedin.com/in/protox1142" target="_blank" rel="noopener noreferrer" className="ide-profile-link ide-profile-link--li">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            LinkedIn
-          </a>
-        </div>
-        <div className="ide-profile-open-badge">
-          <span className="ide-profile-open-dot" />
-          Open to work
-        </div>
-      </div>
+      {/* Project Demo Showcase Modal */}
+      {demoModalProject && (
+        <ProjectDemoModal
+          project={demoModalProject}
+          onClose={() => setDemoModalProject(null)}
+        />
+      )}
     </div>
   );
 }

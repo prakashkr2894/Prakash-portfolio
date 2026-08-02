@@ -1,5 +1,4 @@
 :root {
-  
   --bg-deep:        #050A14;
   --bg-card:        rgba(255, 255, 255, 0.04);
   --bg-card-hover:  rgba(255, 255, 255, 0.07);
@@ -14,7 +13,6 @@
   --text-muted:     #5A6475;
   --border-subtle:  rgba(255, 255, 255, 0.08);
 
-  
   --theme-accent:      #00D4FF;
   --theme-accent-dim:  rgba(0, 212, 255, 0.12);
   --theme-accent-mid:  rgba(0, 212, 255, 0.25);
@@ -23,25 +21,21 @@
   --theme-grid-line:   rgba(0, 212, 255, 0.03);
   --border-glow:       rgba(0, 212, 255, 0.2);
 
-  
   --grad-hero: linear-gradient(135deg, #050A14 0%, #0A1628 50%, #050A14 100%);
   --grad-primary: linear-gradient(135deg, var(--theme-accent), #0099CC);
   --grad-cyan: linear-gradient(135deg, var(--accent-cyan), #0099CC);
   --grad-purple: linear-gradient(135deg, var(--accent-purple), #4A0FBF);
   --grad-text: linear-gradient(135deg, var(--theme-accent) 0%, var(--accent-purple) 100%);
 
-  
   --section-padding: clamp(3rem, 8vw, 6rem);
   --card-radius: 16px;
   --nav-height: 72px;
 
-  
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
   --shadow-glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
   --shadow-glow-purple: 0 0 20px rgba(123, 47, 255, 0.3);
   --shadow-glow-theme: 0 0 20px var(--theme-accent-glow);
 }
-
 
 [data-role='pm'] {
   --theme-accent:       #FFB830;
@@ -55,7 +49,6 @@
   --grad-text:          linear-gradient(135deg, #FFB830 0%, #FF6B35 100%);
   --shadow-glow-theme:  0 0 20px rgba(255, 184, 48, 0.35);
 }
-
 
 *, *::before, *::after {
   margin: 0;
@@ -79,13 +72,15 @@ body {
   line-height: 1.7;
   color: var(--text-primary);
   background: var(--bg-deep);
+  background-attachment: fixed;
   font-size: 16px;
   letter-spacing: -0.01em;
   overflow-x: hidden;
   min-height: 100vh;
+  position: relative;
 }
 
-
+/* Fixed Parallax grid overlay */
 body::before {
   content: '';
   position: fixed;
@@ -94,14 +89,26 @@ body::before {
     linear-gradient(var(--theme-grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--theme-grid-line) 1px, transparent 1px);
   background-size: 50px 50px;
+  background-attachment: fixed;
   pointer-events: none;
   z-index: 0;
   transition: background-image 0.5s ease;
 }
 
+/* Fixed ambient noise texture */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.7;
+}
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', 'Inter', sans-serif;
   font-weight: 700;
   line-height: 1.2;
   color: var(--text-primary);
@@ -112,8 +119,8 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  position: relative;
 }
-
 
 .section-label {
   display: inline-flex;
@@ -137,7 +144,6 @@ h1, h2, h3, h4, h5, h6 {
   transition: background 0.4s ease;
 }
 
-
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -153,7 +159,6 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card), var(--shadow-glow-theme);
 }
-
 
 .btn-primary {
   display: inline-flex;
@@ -199,7 +204,6 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
 }
 
-
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -211,12 +215,11 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(0);
 }
 
-
 .tech-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.3rem 0.8rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 50px;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -224,11 +227,13 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   color: var(--text-secondary);
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tech-chip:hover {
   border-color: var(--theme-accent);
   color: var(--theme-accent);
   background: var(--theme-accent-dim);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px var(--theme-accent-dim);
 }

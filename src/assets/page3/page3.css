@@ -1,17 +1,23 @@
 .page3-section {
-    padding: var(--section-padding, 5rem) clamp(0.75rem, 3vw, 2rem);
+    padding: clamp(1rem, 2.5vw, 2rem) clamp(0.75rem, 3vw, 2rem) 2.5rem;
     position: relative;
     z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    scroll-margin-top: 45px;
 }
 
 .page3-inner {
     max-width: 1440px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .page3-header {
     text-align: center;
-    margin-bottom: clamp(2rem, 5vw, 3rem);
+    margin-bottom: clamp(1rem, 2.5vw, 1.75rem);
 }
 
 .page3-title {
@@ -21,9 +27,9 @@
 }
 
 .page3-subtitle {
-    font-size: clamp(0.9rem, 2vw, 1rem);
+    font-size: clamp(0.85rem, 1.8vw, 0.98rem);
     color: var(--text-secondary, #A0AABA);
-    max-width: 520px;
+    max-width: 900px;
     margin: 0 auto;
 }
 

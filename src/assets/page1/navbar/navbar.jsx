@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './navbar.css';
-
-import { useRole, ROLES } from '../../../context/RoleContext.jsx';
+import { useRole } from '../../../context/RoleContext.jsx';
 
 function Navbar({ setActiveTab }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const drawerRef = useRef(null);
-    const { activeRole, setActiveRole } = useRole();
+    const { role } = useRole();
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -34,64 +33,64 @@ function Navbar({ setActiveTab }) {
         if (tab) setActiveTab(tab);
         setTimeout(() => {
             const el = document.getElementById(id);
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            if (id === 'portfolio-showcase') {
+                if (window.__EXPAND_VSCODE_FOLDER) {
+                    window.__EXPAND_VSCODE_FOLDER('projects');
+                }
+                const targetWorkspace = document.getElementById('vscode-ide-workspace');
+                if (targetWorkspace) {
+                    targetWorkspace.classList.add('vscode-workspace--highlight');
+                    setTimeout(() => targetWorkspace.classList.remove('vscode-workspace--highlight'), 2800);
+                }
+                // Trigger project names blinking effect
+                setTimeout(() => {
+                    const projectItems = document.querySelectorAll('.file-item[data-folder="projects"]');
+                    projectItems.forEach(item => item.classList.add('project-item-blink'));
+                    setTimeout(() => {
+                        projectItems.forEach(item => item.classList.remove('project-item-blink'));
+                    }, 3000);
+                }, 300);
+            }
         }, tab ? 100 : 0);
         setMenuOpen(false);
     };
 
     const navLinks = [
         { label: 'About',    action: () => scrollTo('aboutw') },
-        { label: 'Skills',   action: () => scrollTo('skills-section') },
         { label: 'Projects', action: () => scrollTo('portfolio-showcase', 'projects') },
         { label: 'Contact',  action: () => scrollTo('last_page') },
-    ];
-
-    const roleList = [
-        { id: 'se',  emoji: '💻', short: 'Software' },
-        { id: 'pm',  emoji: '📊', short: 'Product' },
     ];
 
     return (
         <>
             <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
                 <div className="navbar__inner">
-                    {/* Logo */}
-                    <button className="navbar__logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <span className="navbar__logo-tag">SE & PM</span>
+                    {/* Logo — visible only when scrolled */}
+                    <button
+                      className={`navbar__logo ${scrolled ? 'navbar__logo--visible' : ''}`}
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    >
+                      <span className="navbar__logo-pk">Prakash Kumar</span>
                     </button>
 
-                    {/* Desktop Links */}
+                    {/* Desktop Links with Download Resume Button at 4th position */}
                     <div className="navbar__links">
                         {navLinks.map((link) => (
                             <button key={link.label} className="navbar__link" onClick={link.action}>
                                 {link.label}
                             </button>
                         ))}
-                    </div>
 
-                    {/* Role Switcher */}
-                    <div className="role-switcher" aria-label="Switch recruiter view">
-                        {roleList.map((r) => (
-                            <button
-                                key={r.id}
-                                className={`role-pill role-pill--${ROLES[r.id].color} ${activeRole === r.id ? 'role-pill--active' : ''}`}
-                                onClick={() => setActiveRole(r.id)}
-                                title={ROLES[r.id].label}
-                                aria-pressed={activeRole === r.id}
-                            >
-                                <span className="role-pill__emoji">{r.emoji}</span>
-                                <span className="role-pill__label">{r.short}</span>
-                            </button>
-                        ))}
+                        <a
+                            href={role.resumeFile}
+                            download={role.resumeName}
+                            className="navbar__resume-btn"
+                        >
+                            Download Resume ↓
+                        </a>
                     </div>
-
-                    {/* Hire Me CTA */}
-                    <button
-                        className="navbar__cta"
-                        onClick={() => scrollTo('last_page')}
-                    >
-                        Hire Me
-                    </button>
 
                     {/* Hamburger */}
                     <button
@@ -114,30 +113,20 @@ function Navbar({ setActiveTab }) {
             <div className={`mobile-drawer ${menuOpen ? 'mobile-drawer--open' : ''}`} ref={drawerRef}>
                 <div className="mobile-drawer__header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <span className="navbar__logo-tag">SE & PM</span>
+                        <span className="navbar__logo-pk">Prakash Kumar</span>
                     </div>
                     <button className="mobile-drawer__close" onClick={() => setMenuOpen(false)} aria-label="Close menu">✕</button>
                 </div>
 
-                {/* Mobile Role Switcher */}
-                <div className="mobile-role-switcher">
-                    <p className="mobile-role-label">Viewing as:</p>
-                    <div className="mobile-role-pills">
-                        {roleList.map((r) => (
-                            <button
-                                key={r.id}
-                                className={`role-pill role-pill--${ROLES[r.id].color} ${activeRole === r.id ? 'role-pill--active' : ''}`}
-                                onClick={() => setActiveRole(r.id)}
-                                title={ROLES[r.id].label}
-                            >
-                                <span className="role-pill__emoji">{r.emoji}</span>
-                                <span className="role-pill__label">{r.short}</span>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
                 <nav className="mobile-drawer__nav">
+                    <a
+                        href={role.resumeFile}
+                        download={role.resumeName}
+                        className="mobile-drawer__resume-btn"
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Download Resume ↓
+                    </a>
                     {navLinks.map((link) => (
                         <button key={link.label} className="mobile-drawer__link" onClick={link.action}>
                             {link.label}
@@ -145,11 +134,6 @@ function Navbar({ setActiveTab }) {
                         </button>
                     ))}
                 </nav>
-                <div className="mobile-drawer__footer">
-                    <button className="btn-primary" onClick={() => scrollTo('last_page')}>
-                        Hire Me ✦
-                    </button>
-                </div>
             </div>
         </>
     );

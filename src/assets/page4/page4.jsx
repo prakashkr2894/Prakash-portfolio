@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import './page4.css';
 import { handleEmailClick } from "../Connect";
 import { useRole } from '../../context/RoleContext.jsx';
+import { FaLinkedin, FaGithub, FaEnvelope } from 'react-icons/fa';
 
 function Page4() {
     const { role } = useRole();
@@ -74,7 +75,6 @@ function Page4() {
             <div className="contact-inner">
                 {/* Header */}
                 <div className="contact-header">
-                    <span className="contact-eyebrow">Contact</span>
                     <h1 className="contact-title">
                         Get In <span className="contact-title--accent">Touch</span>
                     </h1>
@@ -100,42 +100,34 @@ function Page4() {
                             <p className="availability-card__desc">
                                 {role.contactDesc}
                             </p>
-                            <div className="availability-card__meta">
-                                <div className="avail-meta-item">
-                                    <span className="avail-meta-icon">{role.emoji}</span> {role.label} Role · Noida / Remote
-                                </div>
-                                <div className="avail-meta-item">
-                                    <span className="avail-meta-icon">✉️</span> prakashkr2894@gmail.com
-                                </div>
-                            </div>
                         </div>
 
                         {/* Social Link Cards */}
                         <div className="contact-socials">
                             <a 
-                                href="https://www.linkedin.com/in/protox1142" 
+                                href="https://www.linkedin.com/in/prakashkr2894/" 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 className="contact-social-card contact-social-card--linkedin"
                             >
-                                <div className="contact-social-icon">in</div>
+                                <div className="contact-social-icon"><FaLinkedin /></div>
                                 <div className="contact-social-body">
                                     <div className="contact-social-name">LinkedIn</div>
-                                    <div className="contact-social-handle">protox1142</div>
+                                    <div className="contact-social-handle">prakashkr2894</div>
                                 </div>
                                 <span className="contact-social-arrow">↗</span>
                             </a>
 
                             <a 
-                                href="https://github.com/PROTOX11" 
+                                href="https://github.com/prakashkr2894" 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 className="contact-social-card contact-social-card--github"
                             >
-                                <div className="contact-social-icon">🐱</div>
+                                <div className="contact-social-icon"><FaGithub /></div>
                                 <div className="contact-social-body">
                                     <div className="contact-social-name">GitHub</div>
-                                    <div className="contact-social-handle">PROTOX11</div>
+                                    <div className="contact-social-handle">prakashkr2894</div>
                                 </div>
                                 <span className="contact-social-arrow">↗</span>
                             </a>
@@ -144,7 +136,7 @@ function Page4() {
                                 onClick={handleLinkClick} 
                                 className="contact-social-card contact-social-card--email"
                             >
-                                <div className="contact-social-icon">💌</div>
+                                <div className="contact-social-icon"><FaEnvelope /></div>
                                 <div className="contact-social-body">
                                     <div className="contact-social-name">Email</div>
                                     <div className="contact-social-handle">prakashkr2894@gmail.com</div>

@@ -9,10 +9,10 @@ function Front_p() {
     return (
         <>
             <div className="social-btns-container">
-                <a className="social-btn github" href="https://github.com/PROTOX11" target="_blank" rel="noopener noreferrer">
+                <a className="social-btn github" href="https://github.com/prakashkr2894" target="_blank" rel="noopener noreferrer">
                     <FaGithub className="icon" />
                 </a>
-                <a className="social-btn linkedin" href="https://www.linkedin.com/in/protox1142" target="_blank" rel="noopener noreferrer">
+                <a className="social-btn linkedin" href="https://www.linkedin.com/in/prakashkr2894/" target="_blank" rel="noopener noreferrer">
                     <FaLinkedin className="icon" />
                 </a>
                 <a className="social-btn gmail" onClick={handleEmailClick} rel="noopener noreferer">

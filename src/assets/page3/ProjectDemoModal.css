@@ -1,0 +1,303 @@
+.demo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(5, 10, 20, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.demo-modal-container {
+  background: #0A101D;
+  border: 1px solid var(--theme-accent-border, rgba(0, 212, 255, 0.3));
+  border-radius: 20px;
+  width: min(900px, 95vw);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 40px var(--theme-accent-glow);
+  overflow: hidden;
+}
+
+.demo-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.demo-modal-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-accent, #00D4FF);
+  background: var(--theme-accent-dim, rgba(0, 212, 255, 0.1));
+  padding: 0.25rem 0.65rem;
+  border-radius: 50px;
+  border: 1px solid var(--theme-accent-border, rgba(0, 212, 255, 0.2));
+  display: inline-block;
+  margin-bottom: 0.25rem;
+}
+
+.demo-modal-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary, #E8EAFF);
+  margin: 0;
+}
+
+.demo-modal-close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary, #A0AABA);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+}
+
+.demo-modal-close-btn:hover {
+  background: rgba(255, 107, 107, 0.15);
+  border-color: rgba(255, 107, 107, 0.4);
+  color: #FF6B6B;
+}
+
+.demo-modal-body {
+  padding: 1.75rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.demo-modal-video-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.demo-video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 52%; /* 16:9 aspect ratio */
+  background: #050A14;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.demo-video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.demo-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background: radial-gradient(circle at center, rgba(0, 212, 255, 0.06), transparent 70%);
+}
+
+.demo-placeholder-icon {
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.demo-video-placeholder h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary, #E8EAFF);
+  margin-bottom: 0.25rem;
+}
+
+.demo-video-placeholder p {
+  font-size: 0.85rem;
+  color: var(--text-muted, #5A6475);
+  max-width: 420px;
+}
+
+.demo-video-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #A0AABA);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.demo-quick-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.demo-caption-link {
+  color: var(--theme-accent, #00D4FF);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.demo-caption-link:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.demo-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.demo-features-card,
+.demo-roadmap-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.demo-section-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #E8EAFF);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.demo-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.demo-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary, #A0AABA);
+  line-height: 1.5;
+}
+
+.demo-feature-check {
+  color: #22C55E;
+  font-weight: 800;
+  background: rgba(34, 197, 94, 0.12);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.demo-roadmap-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.demo-roadmap-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.demo-roadmap-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.demo-roadmap-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary, #E8EAFF);
+}
+
+.demo-roadmap-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+.status-in-progress {
+  background: rgba(255, 184, 48, 0.15);
+  color: #FFB830;
+  border: 1px solid rgba(255, 184, 48, 0.3);
+}
+
+.status-planned {
+  background: rgba(0, 212, 255, 0.12);
+  color: #00D4FF;
+  border: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+.demo-roadmap-target {
+  font-size: 0.72rem;
+  color: var(--text-muted, #5A6475);
+}
+
+.demo-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .demo-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
